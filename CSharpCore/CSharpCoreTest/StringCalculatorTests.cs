@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Xunit;
 
 namespace CSharpCore.Test
@@ -6,8 +7,8 @@ namespace CSharpCore.Test
     /* TODO list 
 
     [X] "" => 0
-    [ ] "2" => 2
-    [ ] "invalid" => ArgumentException
+    [X] "2" => 2
+    [X] "invalid" => ArgumentException
     [ ] ",2" oder "2," => 2
     [ ] ",\n" => 0
     [ ] "1,2" => 3
@@ -43,6 +44,28 @@ namespace CSharpCore.Test
             var result = stringCalculator.Add("2");
 
             result.Should().Be(2);
+        }
+
+        [Fact]
+        public void Add_Throw_WhenInputIsInvalid()
+        {
+            var stringCalculator = new StringCalculator();
+
+            Action action = () => stringCalculator.Add("SomeThingInvalid");
+
+            action.Should().ThrowExactly<ArgumentException>();
+        }
+        
+        [Theory]
+        [InlineData(",2", 2)]
+        [InlineData("3,", 3)]
+        public void Add_ReturnResult_WhenInputNumberIsEmpty(string input, int expected)
+        {
+            var stringCalculator = new StringCalculator();
+            
+            var result = stringCalculator.Add(input);
+
+            result.Should().Be(expected);
         }
     }
 }

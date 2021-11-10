@@ -1,4 +1,6 @@
-﻿namespace CSharpCore
+﻿using System;
+
+namespace CSharpCore
 {
 
 
@@ -11,8 +13,13 @@
             {
                 return 0;
             }
-            
-            return -1;
+
+            if (int.TryParse(numbers, out var result))
+            {
+                return result;
+            }
+
+            throw new ArgumentException("Invalid");
         }
     }
 }
