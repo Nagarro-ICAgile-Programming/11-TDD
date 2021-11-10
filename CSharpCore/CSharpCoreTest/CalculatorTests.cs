@@ -43,9 +43,17 @@ namespace CSharpCore.Test
         [Fact]
         public void Add_Return0_WhenInputContainsMultipleEmptyDelimiter()
         {
-            int result = Calculator.Add(@",\n");
+            int result = Calculator.Add(",\n");
 
             result.Should().Be(0);
+        }
+        
+        [Fact]
+        public void Add_ReturnSum_WhenInputContainsEmptyDelimiterAndNumber()
+        {
+            int result = Calculator.Add(",2");
+
+            result.Should().Be(2);
         }
     }
 }
@@ -57,7 +65,7 @@ namespace CSharpCore.Test
 [X] "2" => 2
 [X] "invalid" => ArgumentException
 [X] "," => 0
-[ ] ",\n" => 0
+[X] ",\n" => 0
 [ ] ",2" oder "2," => 2
 [ ] "1,2" => 3
 [ ] "1,2\n3" => 6
