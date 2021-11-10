@@ -14,9 +14,14 @@ namespace CSharpCore
                 return 0;
             }
 
-            if (int.TryParse(numbers, out var result))
+            var numbersSplit = numbers.Split(new[] {',', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+
+            if (numbersSplit.Length == 1)
             {
-                return result;
+                if (int.TryParse(numbersSplit[0], out var result))
+                {
+                    return result;
+                } 
             }
 
             throw new ArgumentException("Invalid");

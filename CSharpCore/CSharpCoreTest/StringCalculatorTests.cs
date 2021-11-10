@@ -9,7 +9,7 @@ namespace CSharpCore.Test
     [X] "" => 0
     [X] "2" => 2
     [X] "invalid" => ArgumentException
-    [ ] ",2" oder "2," => 2
+    [X] ",2" oder "2," => 2
     [ ] ",\n" => 0
     [ ] "1,2" => 3
     [ ] "1,2\n3" => 6
@@ -59,6 +59,10 @@ namespace CSharpCore.Test
         [Theory]
         [InlineData(",2", 2)]
         [InlineData("3,", 3)]
+        [InlineData("4\n", 4)]
+        [InlineData("\n5", 5)]
+        [InlineData("\n,", 0)]
+        [InlineData("\n ,", 0)]
         public void Add_ReturnResult_WhenInputNumberIsEmpty(string input, int expected)
         {
             var stringCalculator = new StringCalculator();
