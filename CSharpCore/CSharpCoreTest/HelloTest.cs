@@ -12,7 +12,7 @@ namespace CSharpCore.Test
 
             string greeting = hello.Greetings();
 
-            greeting.Should().Be("fixme");
+            greeting.Should().Be("Hello!");
         }
     }
 }
