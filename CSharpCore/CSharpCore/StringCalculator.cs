@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace CSharpCore
 {
@@ -14,14 +15,19 @@ namespace CSharpCore
                 return 0;
             }
 
-            var numbersSplit = numbers.Split(new[] {',', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+            var numbersSplit = numbers
+                .Split(new[] { ',', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(number => !string.IsNullOrWhiteSpace(number))
+                .ToList();
 
-            if (numbersSplit.Length == 1)
+            if (!numbersSplit.Any())
             {
-                if (int.TryParse(numbersSplit[0], out var result))
-                {
-                    return result;
-                } 
+                return 0;
+            }
+            
+            if (numbersSplit.Count == 1)
+            {
+                return int.TryParse(numbersSplit.FirstOrDefault()?.Trim(), out var result) ? result : throw new ArgumentException("Invalid");
             }
 
             throw new ArgumentException("Invalid");
