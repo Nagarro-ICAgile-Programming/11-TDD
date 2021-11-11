@@ -81,5 +81,35 @@ namespace CSharpCore.Test
         {
             Assert.Throws<ArgumentException>(() => Calculator.Add("1,2,a"));
         }
+
+        [Fact]
+        public void Add_plusDelimiter4plus5plus6_Returns15()
+        {
+            int result = Calculator.Add("//+\n 4+5+6");
+
+            result.Should().Be(15);
+        }
+
+        [Fact]
+        public void Add_charADelimiter4plus5plus6_Returns15()
+        {
+            int result = Calculator.Add("//a\n 4a5a6");
+
+            result.Should().Be(15);
+        }
+
+        [Fact]
+        public void Add_charADelimiter4comma5plus6_Returns15()
+        {
+            int result = Calculator.Add("//a\n 4,5a6");
+
+            result.Should().Be(15);
+        }
+
+        [Fact]
+        public void Add_missingDelimiter_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => Calculator.Add("//\n"));
+        }
     }
 }
