@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -43,11 +44,16 @@ namespace CSharpCore.Test
         }
 
         [Theory]
-        [InlineData("-1,-4")]
-        public void ShouldThrowException(string input)
+        [InlineData("-1", new string[] {"-1"})]
+        [InlineData("-1, -7", new string[] { "-1", " -7" })]
+        //[InlineData("1, -7, 6")]
+        public void ShouldThrowException(string input, string[] errorNumbers)
         {
             Action action = () => StringCalculator.Add(input);
-            action.Should().Throw<Exception>().WithMessage("Negative numbers are not allowed");
+            action.Should()
+                .Throw<NegativeNumberException>()
+                .WithMessage("Negative numbers are not allowed")
+                .Where(ex => errorNumbers.SequenceEqual(ex.Numbers));
         }
     }
 }

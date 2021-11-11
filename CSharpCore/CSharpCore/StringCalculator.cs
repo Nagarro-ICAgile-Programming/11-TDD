@@ -14,21 +14,20 @@ namespace CSharpCore
                 return 0;
             }
 
-            if (input.Contains('-'))
-            {
-                throw new Exception("Negative numbers are not allowed");
-            }
-
             input = ReplaceCustomDelimiter(input);
 
             string[] numbers = input.Split(delimiter);
+
+            if (input.Contains('-'))
+            {
+                throw new NegativeNumberException(numbers);
+            }
 
             return numbers.Aggregate(0, (sum, i) =>
                 {
                     int.TryParse(i, out var result);
                     return sum + result;
                 });
-
         }
 
         private static string ReplaceCustomDelimiter(string input)
