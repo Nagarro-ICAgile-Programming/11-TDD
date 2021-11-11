@@ -11,11 +11,11 @@ namespace CSharpCore.Test
     [X] "invalid" => ArgumentException
     [X] ",2" oder "2," => 2
     [X] ",\n" => 0
-    [ ] "1,2" => 3
-    [ ] "1,2\n3" => 6
-    [ ] "1,,2" => 3
-    [ ] " 1,  34 " => 35
-    [ ] "1, 2, a" => ArgumentException
+    [X] "1,2" => 3
+    [X] "1,2\n3" => 6
+    [X] "1,,2" => 3
+    [X] " 1,  34 " => 35
+    [X] "1, 2, a" => ArgumentException
     [ ] "//+\n 4+5+6" => 15
     [ ] "//+\n 4\n5,6" => 15
     [ ] "//0\n 4+5+6" => ArgumentException
@@ -46,12 +46,14 @@ namespace CSharpCore.Test
             result.Should().Be(2);
         }
 
-        [Fact]
-        public void Add_Throw_WhenInputIsInvalid()
+        [Theory]
+        [InlineData("SomeThingInvalid")]
+        [InlineData("1, 2, a")]
+        public void Add_Throw_WhenInputIsInvalid(string invalidInput)
         {
             var stringCalculator = new StringCalculator();
 
-            Action action = () => stringCalculator.Add("SomeThingInvalid");
+            Action action = () => stringCalculator.Add(invalidInput);
 
             action.Should().ThrowExactly<ArgumentException>();
         }
@@ -80,6 +82,30 @@ namespace CSharpCore.Test
             var result = stringCalculator.Add(input);
 
             result.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("1,2", 3)]
+        [InlineData("1,2\n3", 6)]
+        [InlineData("1,,2", 3)]
+        [InlineData("1,    34", 35)]
+        public void Add_ReturnSum_WhenInputNumberConsistOfMultipleNumbers(string input, int expected)
+        {
+            var stringCalculator = new StringCalculator();
+            
+            var result = stringCalculator.Add(input);
+
+            result.Should().Be(expected);
+        }
+        
+        [Fact]
+        public void Add_ReturnSum_WhenCustomerDelimiterIsProvided()
+        {
+            var stringCalculator = new StringCalculator();
+            
+            var result = stringCalculator.Add("//+\n 4+5+6");
+
+            result.Should().Be(15);
         }
     }
 }
