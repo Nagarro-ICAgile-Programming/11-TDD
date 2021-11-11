@@ -8,27 +8,39 @@ namespace CSharpCore
     {
         public static int Add(string input)
         {
-            try
+            if (string.IsNullOrEmpty(input))
             {
-                List<char> delimiters = new List<char> { '\n', ',' };
+                return 0;
+            }
 
-                if (string.IsNullOrEmpty(input))
-                {
-                    return 0;
-                }
-                if (input.StartsWith("//") && input[3] == '\n')
-                {
-                    delimiters.Add(input[2]);
-                    input = input.Substring(4);
-                }
-                var stringNumbers = input.Split(delimiters.ToArray());
-                return Array.ConvertAll(stringNumbers, int.Parse).Sum();
-            }
-            catch
+            List<char> delimiters = new List<char> { '\n', ',' };
+
+            if (input.StartsWith("//"))
             {
-                throw new ArgumentException($"{input} is a fucking mess");
+                if (input.Length < 4 || input[3] != '\n')
+                {
+                    throw OurGloriousException(input);
+                }
+
+                delimiters.Add(input[2]);
+                input = input.Substring(4);
             }
-                                    
+
+            var stringNumbers = input.Split(delimiters.ToArray());
+
+            var numbers = stringNumbers.Select(
+                x => int.TryParse(x, out int number) ? number : throw OurGloriousException(input));
+
+            var negativeNumbers = numbers.Where(x => x < 0).ToArray();
+
+            if (negativeNumbers.Any())
+            {
+                throw new NegativeNumberException(negativeNumbers);
+            }
+
+            return numbers.Sum();
         }
+
+        private static ArgumentException OurGloriousException(string input) => new ArgumentException($"{input} is a fucking mess");
     }
 }

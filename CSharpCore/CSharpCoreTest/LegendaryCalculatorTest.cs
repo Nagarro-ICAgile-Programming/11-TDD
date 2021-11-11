@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using Xunit;
 
 namespace CSharpCore.Test
@@ -30,10 +29,12 @@ namespace CSharpCore.Test
             LegendaryCalculator.Add(inputString).Should().Be(resultNumber);
         }
 
-        [Fact]
-        public void ShouldThrowArgumentException()
+        [Theory]
+        [InlineData("Xd")]
+        [InlineData("//")]
+        public void ShouldThrowArgumentException(string input)
         {
-            Action exceptionAdd = () => LegendaryCalculator.Add("Xd");
+            Action exceptionAdd = () => LegendaryCalculator.Add(input);
             exceptionAdd.Should().Throw<ArgumentException>();
         }
 
@@ -42,5 +43,17 @@ namespace CSharpCore.Test
         {
             LegendaryCalculator.Add("//|\n1|1\n1,1").Should().Be(4);
         }
+
+        [Theory]
+        [InlineData("-1", new int[] { -1 })]
+        [InlineData("-1, -7", new int[] { -1, -7 })]
+        [InlineData("1, -7, 6", new int[] { -7 })]
+        public void ShouldThrowNegativeNumberExceptionForNegativeNumbers(string input, int[] expected)
+        {
+            Action exceptionAdd = () => LegendaryCalculator.Add(input);
+            exceptionAdd.Should().Throw<NegativeNumberException>().Where(e => Enumerable.SequenceEqual(e.Numbers, expected));
+        }
+
+
     }
 }
