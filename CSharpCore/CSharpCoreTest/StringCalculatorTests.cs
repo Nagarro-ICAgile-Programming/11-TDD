@@ -16,8 +16,8 @@ namespace CSharpCore.Test
     [X] "1,,2" => 3
     [X] " 1,  34 " => 35
     [X] "1, 2, a" => ArgumentException
-    [ ] "//+\n 4+5+6" => 15
-    [ ] "//+\n 4\n5,6" => 15
+    [X] "//+\n 4+5+6" => 15
+    [X] "//+\n 4\n5,6" => 15
     [ ] "//0\n 4+5+6" => ArgumentException
     [ ] "//\n1" => ArgumentException
     [ ] "//*\n 4+5+6" => ArgumentException
@@ -98,14 +98,27 @@ namespace CSharpCore.Test
             result.Should().Be(expected);
         }
         
-        [Fact]
-        public void Add_ReturnSum_WhenCustomerDelimiterIsProvided()
+        [Theory]
+        [InlineData("//+\n 4+5+6", 15)]
+        [InlineData("//+\n 4\n5,6", 15)]
+        public void Add_ReturnSum_WhenCustomerDelimiterIsProvided(string input, int expected)
         {
             var stringCalculator = new StringCalculator();
             
-            var result = stringCalculator.Add("//+\n 4+5+6");
+            var result = stringCalculator.Add(input);
 
-            result.Should().Be(15);
+            result.Should().Be(expected);
+        }
+        
+        [Theory]
+        [InlineData("//0\n 4+5+6")]
+        public void Add_Throw_WhenInputDelimiterIsInvalid(string invalidInput)
+        {
+            var stringCalculator = new StringCalculator();
+
+            Action action = () => stringCalculator.Add(invalidInput);
+
+            action.Should().ThrowExactly<ArgumentException>();
         }
     }
 }
