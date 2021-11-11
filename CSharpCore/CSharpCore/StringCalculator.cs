@@ -20,8 +20,14 @@ namespace CSharpCore
 
             if (numbers.StartsWith("//"))
             {
-                var customSeperator = numbers[2];
-                separators.Add(customSeperator);
+                var customSeparator = numbers[2];
+
+                if (customSeparator == '\n' || int.TryParse(customSeparator.ToString(), out _))
+                {
+                    throw new ArgumentException("Invalid");
+                }
+                
+                separators.Add(customSeparator);
                 numbers = numbers[numbers.IndexOf('\n')..];
             }
             
