@@ -38,10 +38,12 @@ namespace CSharpCore.Test
             exceptionAdd.Should().Throw<ArgumentException>();
         }
 
-        [Fact]
-        public void ShouldAddNumbersWithCustomDelimiter()
+        [Theory]
+        [InlineData("//|\n1|1\n1,1", 4)]
+        [InlineData("//-\n1-1\n1-1", 4)]
+        public void ShouldAddNumbersWithCustomDelimiter(string input, int expected)
         {
-            LegendaryCalculator.Add("//|\n1|1\n1,1").Should().Be(4);
+            LegendaryCalculator.Add(input).Should().Be(expected);
         }
 
         [Theory]
